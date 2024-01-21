@@ -1,0 +1,124 @@
+﻿@model ProjeYonetimi.Models.Managers
+@{
+    ViewBag.Title = "Manager Update Account";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@if (Model != null)
+{
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="p-5">
+                <div class="text-center">
+                    <h4 class="h4 text-gray-900 mb-4 font-weight-bold">@ViewBag.Title</h4>
+                </div>
+                @using (Html.BeginForm("ManagerUpdateAccount", "Manager", FormMethod.Post, new { @class = "user", id = "updateForm" }))
+                {
+                    @Html.LabelFor(model => model.username, "Username:", new { @class = "font-weight-bold" })
+                    @Html.TextBoxFor(model => model.username, new { @class = "form-control form-control-user", maxlength = 15, required = "required" })
+
+                    @Html.LabelFor(model => model.name, "Name:", new { @class = "font-weight-bold" })
+                    @Html.TextBoxFor(model => model.name, new { @class = "form-control form-control-user", pattern = "^[A-Za-z\\s]+$", title = "Please enter only letters", maxlength = 15, required = "required" })
+
+                    @Html.LabelFor(model => model.surname, "Surname:", new { @class = "font-weight-bold" })
+                    @Html.TextBoxFor(model => model.surname, new { @class = "form-control form-control-user", pattern = "^[A-Za-z\\s]+$", title = "Please enter only letters", maxlength = 15, required = "required" })
+
+                    @Html.LabelFor(model => model.email, "Email:", new { @class = "font-weight-bold" })
+                    @Html.TextBoxFor(model => model.email, new { @class = "form-control form-control-user", maxlength = 50, type = "email", title = "Please enter email" })
+
+                    @Html.LabelFor(model => model.phone_num, "Phone:", new { @class = "font-weight-bold" })
+                    @Html.TextBoxFor(model => model.phone_num, new { @type = "text", @class = "form-control form-control-user", title = "Please enter only numbers", maxlength = 11, pattern = "[0-9]*", required = "required" })
+
+                    <div class="custom-control custom-checkbox small">
+                        <input type="checkbox" class="custom-control-input" id="changePasswordCheckbox">
+                        <label class="custom-control-label font-weight-bold" for="changePasswordCheckbox">
+                            Change Password
+                        </label>
+                    </div>
+
+                    <div id="passwordField" style="display: none;">
+                        @Html.LabelFor(model => model.password, "New Password:")
+                        @Html.PasswordFor(model => model.password, new { @class = "form-control form-control-user font-weight-bold", maxlength = 10, id = "newPassword" })
+
+                        @Html.Label("newPasswordAgain", "New Password Again:")
+                        @Html.Password("newPasswordAgain", null, new { @class = "form-control form-control-user font-weight-bold", maxlength = 10 })
+
+                    </div>
+
+                    <br />
+                    <div id="errorMessage" class="alert alert-danger font-weight-bold" role="alert" style="display: none;">Passwords do not match!</div>
+                    <button type="submit" class="btn btn-primary btn-user btn-block font-weight-bold">Update Account</button>
+                    <br />
+                    if (ViewBag.SuccessMessage != null)
+                    {
+                        <div class="alert alert-success font-weight-bold" role="alert">
+                            @ViewBag.SuccessMessage
+                        </div>
+                        <script>
+                        setTimeout(function () {
+                            window.location.href = '@Url.Action("ManagerMainPage")';
+                        }, 3000);
+                        </script>
+                    }
+                    if (ViewBag.ErrorMessage != null)
+                    {
+                        <div class="alert alert-danger font-weight-bold" role="alert">
+                            @ViewBag.ErrorMessage
+                        </div>
+                    }
+                }
+                <div class="text-center">
+                    <a class="small font-weight-bold" href="ManagerMainPage">Manager Main Page</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-danger font-weight-bold mb-0" role="alert">
+        @ViewBag.ErrorMessage
+    </div>
+
+    <script>
+    setTimeout(function() {
+    window.location.href = '@Url.Action("ManagerLoginPage")';
+    }, 3000);
+    </script>
+}
+
+<script>
+    var newPasswordInput = document.getElementById('newPassword');
+    var newPasswordAgainInput = document.getElementById('newPasswordAgain');
+    var errorMessage = document.getElementById('errorMessage');
+
+    document.getElementById('changePasswordCheckbox').addEventListener('change', function () {
+        var passwordField = document.getElementById('passwordField');
+
+        if (this.checked) {
+            passwordField.style.display = 'block';
+            // Make password fields required
+            newPasswordInput.setAttribute('required', 'required');
+            newPasswordAgainInput.setAttribute('required', 'required');
+
+        } else {
+            passwordField.style.display = 'none';
+            errorMessage.style.display = 'none';
+            // Remove required attribute when checkbox is unchecked
+            newPasswordInput.removeAttribute('required');
+            newPasswordAgainInput.removeAttribute('required');
+        }
+    });
+
+    document.getElementById('updateForm').addEventListener('submit', function (event) {
+
+        if (newPasswordInput.value !== newPasswordAgainInput.value) {
+            // Display error message and prevent form submission
+            errorMessage.textContent = 'Passwords do not match';
+            errorMessage.style.display = 'block';
+            event.preventDefault(); // Prevent default
+        } else {
+            errorMessage.style.display = 'none';
+        }
+    });
+</script>

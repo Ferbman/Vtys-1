@@ -1,0 +1,38 @@
+﻿@{
+    ViewBag.Title = "Manager Main Page";
+    Layout = "~/Views/Shared/_LayoutWithImg.cshtml";
+}
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger font-weight-bold mb-0" role="alert">
+        @ViewBag.ErrorMessage
+    </div>
+    <script>
+        setTimeout(function () {
+            window.location.href = '@Url.Action("ManagerLoginPage")';
+        }, 3000);
+    </script>
+}
+else
+{
+
+    <div class="col-lg-6 d-none d-lg-block bg-manager-image"></div>
+    <div class="col-lg-6">
+        <div class="p-5">
+            <div class="text-center">
+                <h4 class="h4 text-gray-900 mb-4 font-weight-bold">@ViewBag.Title</h4>
+            </div>
+            <a href="ManagerUpdateAccount" class="btn btn-primary btn-user btn-block font-weight-bold">Update Account</a>
+            <a href="@Url.Action("ManageProject", "Project")" class="btn btn-primary btn-user btn-block font-weight-bold">Manage Project</a>
+            <a href="@Url.Action("ManageDuties", "Project")" class="btn btn-primary btn-user btn-block font-weight-bold">Manage Duties</a>
+            <a href="@Url.Action("Register", "Employee")" class="btn btn-primary btn-user btn-block font-weight-bold">Employee Register</a>
+            <a href="@Url.Action("ManageEmployees", "Employee")" class="btn btn-primary btn-user btn-block font-weight-bold">Manage Employee</a>
+            <div class="text-center">
+                <a class="small font-weight-bold" href="@Url.Action("Logout", "Manager")">Log out</a>
+
+            </div>
+        </div>
+    </div>
+
+}

@@ -1,0 +1,83 @@
+﻿@model ProjeYonetimi.Models.Employees
+@{
+    ViewBag.Title = "User Registration";
+    Layout = "~/Views/Shared/_LayoutWithImg.cshtml";
+}
+
+
+
+@if (ViewBag.SuccessMessage != null)
+{
+    <div class="alert alert-success font-weight-bold mb-0" role="alert">
+        @ViewBag.SuccessMessage
+    </div>
+    <script>
+        setTimeout(function () {
+            window.location.href = '@Url.Action("ManagerMainPage", "Manager")';
+        }, 3000);
+    </script>
+}
+
+else
+{
+    <div class="col-lg-6 d-none d-lg-block bg-register-image"></div>
+    <div class="col-lg-6">
+        <div class="p-5">
+
+            <div class="text-center">
+                <h4 class="h4 text-gray-900 mb-4 font-weight-bold">@ViewBag.Title</h4>
+            </div>
+            @using (Html.BeginForm("Register", "Employee", FormMethod.Post, new { id = "registrationForm" }))
+            {
+                int null_duty = 6;
+                @Html.HiddenFor(model => model.duty_id, new { Value = null_duty })
+
+                @Html.LabelFor(model => model.tc, "Tc:", new { @class = "font-weight-bold" })
+                @Html.TextBoxFor(model => model.tc, new { @class = "form-control form-control-user", pattern = "[0-9]{11}", title = "Please enter your 10-digit phone number without 0", maxlength = "11", required = "required" })
+
+                @Html.LabelFor(model => model.name, "Name:", new { @class = "font-weight-bold" })
+                @Html.TextBoxFor(model => model.name, new { @class = "form-control form-control-user", pattern = "^[A-Za-z\\s]+$", title = "Please enter only letters", maxlength = "15", required = "required" })
+
+                @Html.LabelFor(model => model.surname, "Surname:", new { @class = "font-weight-bold" })
+                @Html.TextBoxFor(model => model.surname, new { @class = "form-control form-control-user", pattern = "^[A-Za-z\\s]+$", title = "Please enter only letters", maxlength = "15", required = "required" })
+
+                @Html.LabelFor(model => model.email, "Email:", new { @class = "font-weight-bold" })
+                @Html.TextBoxFor(model => model.email, new { @class = "form-control form-control-user", type = "email", title = "Please enter valid email", maxlength = "50", required = "required" })
+
+                @Html.LabelFor(model => model.phone_num, "Phone Number:", new { @class = "font-weight-bold" })
+                @Html.TextBoxFor(model => model.phone_num, new { @type = "text", @class = "form-control form-control-user", maxlength = "10", pattern = "[0-9]{10}", title = "Please enter your 10-digit phone number without 0", required = "required" })
+
+                <br />
+                <button type="submit" class="btn btn-primary btn-user btn-block">Register</button>
+
+                <div id="errorMessage" style="display: none; color: red;">Passwords do not match!</div>
+                if (ViewBag.ErrorMessage != null)
+                {
+                    <div class="alert alert-danger font-weight-bold" role="alert">
+                        @ViewBag.ErrorMessage
+                    </div>
+                }
+
+                <div class="text-center">
+                    <a href="@Url.Action("ManagerMainPage", "Manager")">Main page</a>
+                </div>
+            }
+
+        </div>
+    </div>
+}
+
+<script>
+    document.getElementById('registrationForm').addEventListener('submit', function (event) {
+        var password = document.getElementById('Password').value;
+        var passwordAgain = document.getElementById('PasswordAgain').value;
+        var errorMessage = document.getElementById('errorMessage');
+
+        if (password !== passwordAgain) {
+            errorMessage.style.display = 'block';
+            event.preventDefault();
+        } else {
+            errorMessage.style.display = 'none';
+        }
+    });
+</script>

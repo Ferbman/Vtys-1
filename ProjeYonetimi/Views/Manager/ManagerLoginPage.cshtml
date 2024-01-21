@@ -1,0 +1,27 @@
+﻿@{
+    ViewBag.Title = "Manager Login";
+    Layout = "~/Views/Shared/_LayoutWithImg.cshtml";
+
+}
+
+<div class="col-lg-6 d-none d-lg-block bg-manager-image"></div>
+<div class="col-lg-6">
+    <div class="p-5">
+
+        @using (Html.BeginForm(null, null, FormMethod.Post, new { @class = "user" }))
+        {
+            <div class="text-center">
+                <h1 class="h4 text-gray-900 mb-4 font-weight-bold">Manager Login</h1>
+            </div>
+            <div class="form-group">
+                @Html.TextBox("username", null, new { @class = "form-control form-control-user", maxlength = "15", @placeholder = "Username", required = "required" })
+            </div>
+            <div class="form-group">
+                @Html.Password("password", null, new { @class = "form-control form-control-user", maxlength = "10", @placeholder = "Password", required = "required" })
+            </div>
+            <button type="submit" class="btn btn-primary btn-user btn-block font-weight-bold">Login</button>
+        }
+        <hr>
+        @Html.Partial("_ErrorMessage")
+    </div>
+</div>

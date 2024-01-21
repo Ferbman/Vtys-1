@@ -1,0 +1,213 @@
+﻿@model  ProjeYonetimi.Models.ProjectViewModel
+
+@{
+    ViewBag.Title = "Manage Project";
+    Layout = "~/Views/Shared/_LayoutList.cshtml";
+}
+
+
+@if (Model != null)
+{
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="p-5">
+                <div class="text-center">
+                    <h4 class="h4 text-gray-900 mb-4 font-weight-bold">@ViewBag.Title</h4>
+                </div>
+
+                <button id="createButton" class="btn btn-primary btn-user btn-block font-weight-bold">Create</button>
+
+
+                <div id="Create" style="display:none">
+                    <form method="post" id="create_form">
+                        @Html.LabelFor(model => model.project_name, "Job Name:", new { @class = "font-weight-bold" })
+                        @Html.TextBoxFor(model => model.project_name, new { @class = "form-control form-control-user project_name", pattern = "^[A-Za-z\\s]+$", title = "Please enter only letters", @Value = "", maxlength = 50, required = "required" })
+                        @Html.ValidationMessageFor(model => model.project_name, "", new { @class = "text-danger" })
+
+                        @Html.LabelFor(model => model.project_description, "Job Descrition:", new { @class = "font-weight-bold" })
+                        @Html.TextBoxFor(model => model.project_description, new { @class = "form-control form-control-user project_description", pattern = "^[A-Za-z\\s]+$", title = "Please enter only letters", @Value = "", maxlength = 200, required = "required" })
+
+                        @Html.LabelFor(model => model.start_date, "Başlangıç Tarihi:", new { @class = "font-weight-bold" })
+                        @Html.TextBoxFor(model => model.start_date, new { @type = "date", @class = "form-control form-control-user", @Value = "", required = "required" })
+                 
+                        @Html.LabelFor(model => model.end_date, "Bitiş Tarihi:", new { @class = "font-weight-bold" })
+-                       @Html.TextBoxFor(model => model.end_date, new { @type = "date", @class = "form-control form-control-user", @Value = "", required = "required" })
+
+
+
+                        <br />
+                        <input type="submit" class="btn btn-success btn-user btn-block font-weight-bold" value="Create Job" />
+                    </form>
+                </div>
+
+
+                <div id="errorMessages" role="alert" class="text-danger alert alert-danger d-none"></div>
+
+                <br />
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    ViewBag.SuccessMessage = TempData["SuccessMessage"];
+                }
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    ViewBag.SuccessMessage = TempData["SuccessMessage"];
+                }
+
+                @if (@ViewBag.SuccessMessage != null)
+                {
+                    <div class="alert alert-success font-weight-bold" role="alert">
+                        @ViewBag.SuccessMessage
+                    </div>
+                }
+
+                @if (@ViewBag.ErrorMessage != null)
+                {
+                    <div class="alert alert-danger font-weight-bold" role="alert">
+                        @ViewBag.ErrorMessage
+                    </div>
+
+                }
+
+
+
+                <div id="Update">
+
+
+                    @if(Model.ProjectsList != null && Model.ProjectsList.Any()){
+                    <div class="mt-4">
+                        <div class="d-flex justify-content-center">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Başlangıç tarihi</th>
+                                            <th>Son tarih</th>
+                                            <th>Mevcut durumu</th>
+                                            <th>Gecikme zamanı</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var project in Model.ProjectsList)
+                                        {
+                                            <tr>
+                                                <td class="font-weight-bold">@project.project_name</td>
+                                                <td>@project.project_description</td>
+                                                <td>@project.start_date</td>
+                                                <td>@project.end_date </td>
+                                                <td>@project.project_status </td>
+                                                <td>@project.delay_time </td>
+
+
+                                                <td>
+                                                    <button type="button" class="btn btn-warning btn-user btn-block updateButton font-weight-bold" data-projectid="@project.project_id">Edit</button>
+                                                </td>
+                                            </tr>
+
+
+                                            <tr id="updateForm_@project.project_id" style="display:none">
+                                                @using (Html.BeginForm("ProjectUpdate", "Project", FormMethod.Post, new { @class = "user update-form", @id = "update-form-" + @project.project_id }))
+                                                {
+                                                    @Html.HiddenFor(model => project.project_id, new { Name = "project_id" })
+
+                                                    <td>
+
+                                                        @Html.TextBoxFor(model => model.project_name, new { @class = "form-control form-control-user project_name", pattern = "^[A-Za-z\\s]+$", title = "Please enter only letters", maxlength = 50, @Value = project.project_name, required = "required" })
+                                                    </td>
+                                                    <td>
+                                                        @Html.TextBoxFor(model => model.project_description, new { @class = "form-control form-control-user project_description", pattern = "^[A-Za-z\\s]+$", title = "Please enter only letters", maxlength = 200, @Value = project.project_description, required = "required" })
+                                                    </td>
+                                                    <td>
+                                                        @Html.TextBoxFor(model => model.start_date, new { @type = "date", @class = "form-control form-control-user", @Value = project.start_date, maxlength = 10, pattern = "^[0-9]{4}-[0-9]{2}-[0-9]{2}$\"", title = "Please enter a valid date (yyyy-mm-dd)", required = "required" })
+                                                    </td>
+                                                    <td>
+                                                        @Html.TextBoxFor(model => model.end_date, new { @type = "date", @class = "form-control form-control-user", @Value = project.end_date, @maxlength = 10, @pattern = "^[0-9]{4}-[0-9]{2}-[0-9]{2}$", @title = "Please enter a valid date (yyyy-mm-dd)", @required = "required" })
+
+                                                    </td>
+                                                    <td>
+                                                     
+                                                        @Html.DropDownListFor(model => model.project_status,
+                                                                              new SelectList(new[] { "Waiting", "Progress", "Finish" }),
+                                                                              new { @class = "form-control form-control-user", required = "required" })
+                                                    </td>
+
+                                                    <td>
+                                                        @Html.TextBoxFor(model => model.delay_time, new { @type = "text", @class = "form-control form-control-user", @Value = project.delay_time, maxlength = 10, pattern = "[0-9]*", title = "Please enter only numbers", required = "required" })
+                                                        <br />
+                                                        <button type="submit" class="btn btn-primary btn-user btn-block font-weight-bold">Update</button>
+                                                    </td>
+
+                                                }
+                                                @using (Html.BeginForm("ProjectDelete", "Project", FormMethod.Post, new { @class = "user" }))
+                                                {
+                                                    <td>
+                                                        @Html.HiddenFor(model => project.project_id, new { Name = "project_id" })
+                                                        <button type="submit" class="btn btn-danger btn-user btn-block font-weight-bold">Delete</button>
+                                                    </td>
+                                                }
+                                            </tr>
+
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <a class="small font-weight-bold" href="@Url.Action("ManagerMainPage", "Manager")">Manager Main Page</a>
+                    </div>
+
+                    }
+                    else
+                    {
+                    <div id="errorMessage font-weight-bold" style="color: red;">No Jobs Found.</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-danger font-weight-bold mb-0" role="alert">
+        @ViewBag.ErrorMessage
+    </div>
+    <script>
+    setTimeout(function () {
+        window.location.href = '@Url.Action("ManagerLoginPage","Manager")';
+    }, 3000);
+    </script>
+}
+
+<script>
+    document.getElementById('createButton').addEventListener('click', function () {
+        var createDiv = document.getElementById('Create');
+        if (createDiv.style.display === 'none') {
+            createDiv.style.display = 'block';
+            document.getElementById("errorMessage").style.display = "block";
+        }
+        else {
+            createDiv.style.display = 'none';
+            document.getElementById("errorMessage").style.display = "none";
+        }
+    });
+
+    var updateButtons = document.getElementsByClassName('updateButton');
+    for (var i = 0; i < updateButtons.length; i++) {
+        updateButtons[i].addEventListener('click', function () {
+            var projectId = this.getAttribute('data-projectid');
+            var updateForm = document.getElementById('updateForm_' + projectId);
+            if (updateForm.style.display === 'none') {
+                updateForm.style.display = 'table-row';
+            } else {
+                updateForm.style.display = 'none';
+            }
+        });
+
+    }
+
+</script>

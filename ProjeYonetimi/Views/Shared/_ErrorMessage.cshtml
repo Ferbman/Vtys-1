@@ -1,0 +1,12 @@
+﻿@{
+    string errorMessage = ViewData["ErrorMessage"] as string;
+}
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="error-message">
+        <div class="alert alert-danger font-weight-bold" role="alert">
+            @ViewBag.ErrorMessage
+        </div>
+    </div>
+}

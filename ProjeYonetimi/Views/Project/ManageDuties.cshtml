@@ -1,0 +1,171 @@
+﻿@model  ProjeYonetimi.Models.ProjectViewModel
+
+@{
+    ViewBag.Title = "Manage Duties";
+    Layout = "~/Views/Shared/_LayoutList.cshtml";
+}
+
+@if (Model != null)
+{
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="p-5">
+                <div class="text-center">
+                    <h4 class="h4 text-gray-900 mb-4 font-weight-bold">@ViewBag.Title</h4>
+
+                    <br />
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        ViewBag.SuccessMessage = TempData["SuccessMessage"];
+                    }
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        ViewBag.SuccessMessage = TempData["SuccessMessage"];
+                    }
+
+                    @if (@ViewBag.SuccessMessage != null)
+                    {
+                        <div class="alert alert-success font-weight-bold" role="alert">
+                            @ViewBag.SuccessMessage
+                        </div>
+                    }
+                    6
+                    @if (@ViewBag.ErrorMessage != null)
+                    {
+                        <div class="alert alert-danger font-weight-bold" role="alert">
+                            @ViewBag.ErrorMessage
+                        </div>
+
+                    }
+
+
+                    <div id="Update">
+
+
+                        @if (Model.ProjectsList != null && Model.ProjectsList.Any())
+                        {
+                            <div class="mt-4">
+                                <div class="d-flex justify-content-center">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Description</th>
+                                                    <th>Başlangıç tarihi</th>
+                                                    <th>Son tarih</th>
+                                                    <th>Mevcut durumu</th>
+                                                    <th>Gecikme zamanı</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var project in Model.ProjectsList)
+                                                {
+                                                    <tr>
+                                                        <td class="font-weight-bold">@project.project_name</td>
+                                                        <td>@project.project_description</td>
+                                                        <td>@project.start_date</td>
+                                                        <td>@project.end_date </td>
+                                                        <td>@project.project_status </td>
+                                                        <td>@project.delay_time </td>
+
+
+                                                        <td>
+                                                            <button type="button" class="btn btn-warning btn-user btn-block updateButton font-weight-bold" data-projectid="@project.project_id">Edit</button>
+                                                        </td>
+                                                    </tr>
+
+
+
+
+                                                    <tr id="createForm_@project.project_id" style="display:none">
+
+                                                        <td>
+                                                            <div>
+                                                                @foreach (var duties in Model.DutiesList)
+                                                                {
+                                                                    if (duties.project_id == project.project_id)
+                                                                    {
+                                                                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                                                                            <span style="margin-right: 10px;">@duties.duty_name</span>
+                                                                            @using (Html.BeginForm("DutyDelete", "Project", FormMethod.Post, new { @class = "user" }))
+                                                                            {
+                                                                                @Html.HiddenFor(model => duties.duty_id, new { Name = "duty_id" })
+                                                                                <button type="submit" class="btn btn-danger btn-user font-weight-bold">Delete</button>
+                                                                            }
+                                                                        </div>
+
+                                                                    }
+                                                                }
+                                                            </div>
+
+                                                        </td>
+
+                                                        @using (Html.BeginForm("ManageDuties", "Project", FormMethod.Post, new { @class = "user update-form", @id = "create-form-" + @project.project_id }))
+                                                        {
+                                                            @Html.HiddenFor(model => project.project_id, new { Name = "project_id" })
+
+                                                            <td>
+                                                                @Html.TextBoxFor(model => model.duty_name, new { @class = "form-control form-control-user duty_name", pattern = "^[A-Za-z\\s]+$", title = "Please enter only letters", maxlength = 50, required = "required" })
+                                                            </td>
+                                                            <td>
+
+                                                                <button type="submit" class="btn btn-primary btn-user btn-block font-weight-bold">Add</button>
+                                                            </td>
+
+                                                        }
+                                                        @using (Html.BeginForm("ProjectDelete", "Project", FormMethod.Post, new { @class = "user" }))
+                                                        {
+                                                            <td>
+                                                                @Html.HiddenFor(model => project.project_id, new { Name = "project_id" })
+                                                                <button type="submit" class="btn btn-danger btn-user btn-block font-weight-bold">Delete Project</button>
+                                                            </td>
+                                                        }
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                </div>
+                <div class="text-center">
+                    <a class="small font-weight-bold" href="@Url.Action("ManagerMainPage", "Manager")">Manager Main Page</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+}
+else
+{
+    <div class="alert alert-danger font-weight-bold mb-0" role="alert">
+        @ViewBag.ErrorMessage
+    </div>
+    <script>
+    setTimeout(function () {
+        window.location.href = '@Url.Action("ManagerLoginPage", "Manager")';
+    }, 3000);
+    </script>
+}
+
+<script>
+    var updateButtons = document.getElementsByClassName('updateButton');
+    for (var i = 0; i < updateButtons.length; i++) {
+        updateButtons[i].addEventListener('click', function () {
+            var projectId = this.getAttribute('data-projectid');
+            var updateForm = document.getElementById('createForm_' + projectId);
+            if (updateForm.style.display === 'none') {
+                updateForm.style.display = 'table-row';
+            } else {
+                updateForm.style.display = 'none';
+            }
+        });
+
+    }
+
+</script>

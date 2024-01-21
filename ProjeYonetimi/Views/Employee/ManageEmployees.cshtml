@@ -1,0 +1,160 @@
+﻿@model  ProjeYonetimi.Models.EmployeeViewModel
+@{
+    ViewBag.Title = "Manage Employees";
+    Layout = "~/Views/Shared/_LayoutList.cshtml";
+}
+
+
+@if (Model != null)
+{
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="p-5">
+                <div class="text-center">
+                    <h4 class="h4 text-gray-900 mb-4 font-weight-bold">@ViewBag.Title</h4>
+                </div>
+
+                @if (Model.EmployeesViewModelList.Any())
+                {
+                    <div class="mt-4">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Name Surname</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Project Name</th>
+                                        <th>Duty</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var employee in Model.EmployeesViewModelList)
+                                    {
+                                        <tr>
+                                            <td>@employee.name @employee.surname</td>
+                                            <td>@employee.email</td>
+                                            <td>@employee.phone_num</td>
+                                            <td>@employee.project_name</td>
+                                            <td>@employee.duty_name</td>
+                                            <td><button type="button" class="btn btn-warning btn-user btn-block updateButton font-weight-bold" data-tc="@employee.tc">Edit</button></td>
+                                        </tr>
+                                        <tr id="updateForm_@employee.tc" style="display:none">
+                                            @using (Html.BeginForm("EmployeeUpdate", "Employee", FormMethod.Post, new { @class = "user", @style = "display:none;" }))
+                                            {
+
+                                                <td>
+                                                    @Html.Hidden("update_tc", employee.tc)
+                                                    @Html.Hidden("default_duty_id", employee.duty_id)
+                                                    @Html.Label("Name:")
+                                                    @Html.TextBox("update_name", employee.name, new { @class = "form-control form-control-user", pattern = "^[A-Za-z\\s]+$", title = "Please enter only letters", required = "required" })
+
+                                                    @Html.Label("Surname:")
+                                                    @Html.TextBox("update_surname", employee.surname, new { @class = "form-control form-control-user", pattern = "^[A-Za-z\\s]+$", title = "Please enter only letters", required = "required" })
+                                                </td>
+                                                <td>
+                                                    @Html.Label("email:")
+                                                    @Html.TextBox("update_email", employee.email, new { @type = "email", @class = "form-control form-control-user", title = "Please enter email", required = "required" })
+                                                    @Html.Label("Phone:")
+                                                    @Html.TextBox("update_phone_num", employee.phone_num, new { @type = "text", @class = "form-control form-control-user", maxlength = "10", pattern = "[0-9]{10}", title = "Please enter your 10-digit phone number without 0", required = "required" })
+                                                </td>
+                                                <td>
+                                                    @Html.Label("Duty:")
+                                                    @if (Model.DutiesList != null && Model.DutiesList.Any())
+                                                    {
+                                                        @Html.DropDownList("update_duty_id",
+                                                                           new SelectList(Model.DutiesList, "duty_id", "duty_name",employee.duty_name),
+                                                                           "Select a duty",
+                                                                           new { @class = "form-control form-control-user", required = "required" })
+                                                    }
+
+
+
+                                                </td>
+
+
+                                                <td>
+                                                    @Html.Label("Update", "Update:", new { style = "visibility:hidden;" })
+                                                    <button type="submit" class="btn btn-primary btn-user btn-block font-weight-bold">Update</button>
+                                                </td>
+
+                                            }
+                                            @using (Html.BeginForm("FireEmployee", "Employee", FormMethod.Post, new { @class = "user" }))
+                                            {
+                                                @Html.HiddenFor(model => employee.tc, new { @Value = employee.tc, Name = "tc" })
+
+                                                <td colspan="1">
+                                                    @Html.Label("Fire", "Fire:", new { style = "visibility:hidden;" })
+                                                    <button type="submit" class="btn btn-danger btn-user btn-block font-weight-bold btn-block">Fire</button>
+                                                </td>
+
+                                            }
+
+                                        </tr>
+
+
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                }
+                else
+                {
+                    <div class="alert alert-warning  text-center font-weight-bold" role="alert"> No Employees found.</div>
+                }
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    ViewBag.SuccessMessage = TempData["SuccessMessage"];
+                    <div class="alert alert-success text-center font-weight-bold" role="alert">
+                        @ViewBag.SuccessMessage
+                    </div>
+                }
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    ViewBag.SuccessMessage = TempData["SuccessMessage"];
+                    <div class="alert alert-success text-center font-weight-bold" role="alert">
+                        @ViewBag.SuccessMessage
+                    </div>
+                }
+                <div class="text-center">
+                    <a class="small font-weight-bold" href="@Url.Action("ManagerMainPage", "Manager")">Manager Main Page</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-danger font-weight-bold mb-0" role="alert">
+        @ViewBag.ErrorMessage
+    </div>
+
+    <script>
+    setTimeout(function () {
+        window.location.href = '@Url.Action("ManagerLoginPage","Manager")';
+    }, 3000);
+    </script>
+
+}
+
+<script>
+    var updateButtons = document.getElementsByClassName('updateButton');
+    for (var i = 0; i < updateButtons.length; i++) {
+        updateButtons[i].addEventListener('click', function () {
+            var userTc = this.getAttribute('data-tc');
+            var updateForm = document.getElementById('updateForm_' + userTc);
+
+            if (updateForm.style.display === 'none') {
+                updateForm.style.display = 'table-row';
+            } else {
+                updateForm.style.display = 'none';
+            }
+        });
+    }
+
+
+</script>
