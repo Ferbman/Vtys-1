@@ -50,10 +50,10 @@ Gereksinimler
 Kurulum Adımları
 
     Projeyi klonlayın:
-    git clone https://github.com/kullaniciadi/proje-yonetim-sistemi.git
+    git clone [https://github.com/kullaniciadi/proje-yonetim-sistemi.git](https://github.com/Ferbman/Vtys-1.git)
 
     Proje dizinine gidin:
-    cd proje-yonetim-sistemi
+    cd Vtys-1
 
     Bağımlılıkları geri yükleyin:
     dotnet restore
