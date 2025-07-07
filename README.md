@@ -34,18 +34,16 @@ Bu web uygulaması aşağıdaki teknolojiler kullanılarak geliştirilmiştir:
 
     Backend: C# .NET Core
 
-    Veritabanı: (Buraya kullanılan veritabanı teknolojisini ekleyebilirsiniz, örneğin: SQL Server, PostgreSQL, MySQL, vb.)
+    Veritabanı: Mssql
 
 Kurulum ve Çalıştırma
 
 Projeyi yerel makinenizde çalıştırmak için aşağıdaki adımları takip edebilirsiniz:
 Gereksinimler
 
-    .NET SDK (Belirli sürüm, örneğin: .NET 6.0 SDK veya üzeri)
+    .NET SDK 9.0
 
-    (Kullanılan veritabanı sunucusu, örneğin: SQL Server Express)
-
-    IDE (Visual Studio, Visual Studio Code vb.)
+    IDE Visual Studio
 
 Kurulum Adımları
 
